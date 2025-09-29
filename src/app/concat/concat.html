@@ -1,31 +1,48 @@
-<mat-toolbar><span>My First ConCat Tool</span></mat-toolbar>
-
-<div class="flex-container">
-    <div>
-    <h1>Input List Below:</h1>
-    <textarea matInput class="inputArea" type="text" autofocus #inputtext ></textarea>
+<div class="flex-body">
+    <div class="logo">
+    <img src="logo.png" alt="Logo" >
     </div>
+    <div class="flex-input">
+        <div>
+            <div  class = 'input-div'>
+                <h1 class="input-header">Input List:</h1>
+                <textarea matInput class="inputArea" type="text" autofocus #inputtext ></textarea>
+            </div>
+            <div  class="flex-input-button-div">
+                <button mat-flat-button class="flex-input-button" (click)="concat(inputtext.value, wrapInput.valueAsNumber, toggleGroup.value)"><b>Format List</b></button>
+            </div>
 
-    <div class="flex-container-buttons">
-        
-        <button mat-raised-button (click)="concat(inputtext.value, wrapInput.valueAsNumber, toggleGroup.value)">ConCat</button>
+        </div>
+        <div>
+            <div class="output-div">
+                <div class="output-header">
+                    <h1 class="output-header-title">Output:</h1>
+                    <h1 class="output-header-length">{{outputLength}}</h1>
+                </div>
+                <textarea class="outputArea" value="{{outputText}}" wrap="off" readonly type="text" onclick="this.select()" ></textarea>
+            </div>
+            <div class="output-buttons">
 
-        <form >
-        <mat-form-field class="wrap-input">
-            <mat-label>Wrap Value:</mat-label>
-                <input matInput  type="number" value="{{wrap}}" #wrapInput>
-        </mat-form-field>
-        </form>
+                <button mat-flat-button class="clear-button" (click)="clearFields(); inputtext.value=''"><b>Clear</b></button>
 
-        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" #toggleGroup="matButtonToggleGroup" (change)="onToggleChange($event.value)">
-            <mat-button-toggle value="SQLString" [checked]="true">SQLString</mat-button-toggle>
-            <mat-button-toggle value="SemiColon">SemiColon</mat-button-toggle>
-            <mat-button-toggle value="Comma">Comma</mat-button-toggle>
-        </mat-button-toggle-group>
-        <button mat-raised-button (click)="clearFields(); inputtext.value=''">Clear</button>
-    </div>
-    <div>
-    <h1>Output ( {{outputLength}} ) :</h1>
-    <textarea class="outputArea" value="{{outputText}}" wrap="off" readonly type="text" onclick="this.select()" ></textarea>
+                <div>
+                    <form >
+                        <mat-form-field class="wrap-input">
+                            <mat-label>Wrap Value:</mat-label>
+                            <input matInput  type="number" value="{{wrap}}" #wrapInput>
+                        </mat-form-field>
+                    </form>
+                </div>
+                
+                <div>
+                    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" #toggleGroup="matButtonToggleGroup" (change)="onToggleChange($event.value)">
+                        <mat-button-toggle value="SQLString" [checked]="true">SQLString</mat-button-toggle>
+                        <mat-button-toggle value="SemiColon">SemiColon</mat-button-toggle>
+                        <mat-button-toggle value="Comma">Comma</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
