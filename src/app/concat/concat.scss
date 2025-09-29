@@ -1,74 +1,135 @@
-.flex-container {
+.flex-body {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    //background-color: var(--mat-sys-primary);
+    flex-flow: column;
+    padding:50px;
 }
 
-.flex-container-buttons {
+.flex-input{
     display: flex;
-    flex-flow: column nowrap;
-    align-items: stretch;
-    justify-content: space-evenly;
-    padding: 20px;
+    flex-flow: row wrap;
+    justify-content:center;
 }
 
 .outputArea {
     resize: none;
     border: 5px solid black;
-    height:50vh;
-    width: 30vw;
+    height:40vh;
+    width: 95%;
     padding: 10px;
-    min-width: 10vw;
-    margin: 10px;
     font-size: 20px;
+    min-width: 350px;
+    border-radius: 20px;
 }
 .wrap-input{
-    width: 100%;
+    flex-basis: 50%;
+    
 }
 
 .inputArea {
     resize: none;
     border: 5px solid black;
-    height:50vh;
-    width: 10vw;
+    height:40vh;
     padding: 10px;
-    min-width: 10vw;
     font-size: 20px;
-}
-
-@media (max-width: 900px){
-    .flex-container {
-    display: flex;
-    flex-flow: column wrap;
     justify-content: center;
-    margin: 10px
-    }
-}
-
-@media (max-width: 900px){
-    .inputArea {
-        resize: none;
-        border: 5px solid black;
-        height:50vh;
-        width: 80vw;
-        padding: 10px;
-        min-width: 10vw;
-        font-size: 20px;
-    }
-}
-
-@media (max-width: 900px){
-    .outputArea {
-        resize: none;
-        border: 5px solid black;
-        height:50vh;
-        width: 80vw;
-        padding: 10px;
-        min-width: 10vw;
-        font-size: 20px;
-    }
+    width: 35vw;
+    min-width: 350px;
+    border-radius: 20px;
 }
 
 
+img {
+    width: 1000px;
+}
 
+.input-div {
+    background-color: #2E4152;
+    padding:20px;
+    margin:20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px black;
+}
+
+.flex-input-button-div{
+    justify-self: center;
+    width: 60%;
+}
+
+.flex-input-button{
+    background-color:  #FF8A5B !important;
+    color:  #1A2035 !important;
+    width: 100%;
+    box-shadow: 5px 5px 5px black;
+}
+
+.flex-input-button:active{
+    background-color:  #FF8A5B !important;
+    color:  #1A2035 !important;
+    width: 100%;
+    box-shadow: 0px 0px 0px black;
+}
+
+.clear-button{
+    background-color:  #FF8A5B !important;
+    color:  #1A2035 !important;
+    box-shadow: 5px 5px 5px black;
+    flex-basis: 50%;
+}
+
+.clear-button:active{
+    background-color:  #FF8A5B !important;
+    color:  #1A2035 !important;
+    box-shadow: 0px 0px 0px black;
+}
+
+.output-buttons{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap:10px;
+    
+}
+
+.output-div {
+    background-color: #2E4152;
+    padding:20px;
+    margin:20px;
+    width: 35vw;
+    min-width: 400px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px black;
+}
+
+.output-header{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 15px;
+    margin-left: 5px;
+
+}
+
+.input-header{
+    color:#B7E4C7;
+}
+
+.output-header-title{
+    color: #B7E4C7;
+}
+
+.output-header-length{
+    color: #FF8A5B;
+}
+.mat-button-toggle-checked {
+
+    background-color: #FF8A5B;
+    color: #B7E4C7;
+  }
+.mat-button-toggle {
+    background-color: #2E4152;
+    color: #B7E4C7;
+  }
+
+textarea:focus {
+  outline: none;
+  box-shadow: 1px 1px 5px black;
+}
