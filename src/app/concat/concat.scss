@@ -1,135 +1,370 @@
 .flex-body {
     display: flex;
     flex-flow: column;
-    padding:50px;
+    padding: 50px;
 }
 
-.flex-input{
+.page-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+        "logo    controls"
+        "input   output"
+        "format  clear";
+    column-gap: 24px;
+    row-gap: 12px;
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.logo          { grid-area: logo; display: flex; align-items: center; }
+.controls      { grid-area: controls; }
+.input-div     { grid-area: input; }
+.output-div    { grid-area: output; }
+.flex-input-button-div { grid-area: format; }
+.output-buttons { grid-area: clear; }
+
+// Item 1 — logo: height-driven sizing, no unbounded growth
+.logo img {
+    max-height: 80px;
+    width: auto;
+    max-width: 100%;
+    display: block;
+}
+
+// Item 2 — bottom-align wrap input with toggle buttons
+.controls {
     display: flex;
-    flex-flow: row wrap;
-    justify-content:center;
+    flex-flow: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 20px;
+    padding: 16px 20px;
+}
+
+@media (max-width: 900px) {
+    .page-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "logo"
+            "controls"
+            "input"
+            "format"
+            "output"
+            "clear";
+    }
+
+    // Center logo in single-column layout
+    .logo {
+        justify-content: center;
+    }
+
+    // Toggle groups fill the full width; buttons share space equally
+    .toggle-group {
+        width: 100%;
+    }
+
+    .toggle-btn {
+        flex: 1;
+    }
 }
 
 .outputArea {
     resize: none;
-    border: 5px solid black;
-    height:40vh;
+    border: 1.5px solid rgba(183, 228, 199, 0.2);
+    height: 40vh;
     width: 95%;
     padding: 10px;
     font-size: 20px;
-    min-width: 350px;
+    font-family: monospace;
     border-radius: 20px;
 }
-.wrap-input{
-    flex-basis: 50%;
-    
+
+.wrap-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.wrap-label {
+    color: #B7E4C7;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+.wrap-input-field {
+    background-color: #1A2035;
+    color: #B7E4C7;
+    border: 2px solid #B7E4C7;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 16px;
+    width: 70px;
+    text-align: center;
+
+    &:focus {
+        outline: none;
+        border-color: #E07050;
+        box-shadow: 1px 1px 5px black;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[type=number] {
+        -moz-appearance: textfield;
+    }
+}
+
+.toggle-group {
+    display: flex;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.toggle-btn {
+    background-color: #2E4152;
+    color: #B7E4C7;
+    border: none;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    flex-shrink: 1;
+    min-width: 0;
+
+    &:first-child { border-radius: 8px 0 0 8px; }
+    &:last-child  { border-radius: 0 8px 8px 0; }
+
+    &:not(.active):hover {
+        background-color: #3a5468;
+    }
+
+    &.active {
+        background-color: #E07050;
+        color: #1A2035;
+    }
 }
 
 .inputArea {
     resize: none;
-    border: 5px solid black;
-    height:40vh;
+    border: 1.5px solid rgba(183, 228, 199, 0.2);
+    height: 40vh;
+    width: 95%;
     padding: 10px;
     font-size: 20px;
-    justify-content: center;
-    width: 35vw;
-    min-width: 350px;
+    font-family: monospace;
     border-radius: 20px;
 }
 
-
-img {
-    width: 1000px;
-}
-
+// Item 7 — subtle card gradient
 .input-div {
-    background-color: #2E4152;
-    padding:20px;
-    margin:20px;
+    background: linear-gradient(145deg, #344e66 0%, #2E4152 100%);
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
     border-radius: 20px;
-    box-shadow: 5px 5px 5px black;
-}
-
-.flex-input-button-div{
-    justify-self: center;
-    width: 60%;
-}
-
-.flex-input-button{
-    background-color:  #FF8A5B !important;
-    color:  #1A2035 !important;
-    width: 100%;
-    box-shadow: 5px 5px 5px black;
-}
-
-.flex-input-button:active{
-    background-color:  #FF8A5B !important;
-    color:  #1A2035 !important;
-    width: 100%;
-    box-shadow: 0px 0px 0px black;
-}
-
-.clear-button{
-    background-color:  #FF8A5B !important;
-    color:  #1A2035 !important;
-    box-shadow: 5px 5px 5px black;
-    flex-basis: 50%;
-}
-
-.clear-button:active{
-    background-color:  #FF8A5B !important;
-    color:  #1A2035 !important;
-    box-shadow: 0px 0px 0px black;
-}
-
-.output-buttons{
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    gap:10px;
-    
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
+.flex-input-button-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+// Item 7 — softer orange on buttons
+.flex-input-button {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    width: 60%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.flex-input-button:active {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    box-shadow: none;
+}
+
+// Item 4 — Copy + Clear buttons
+.output-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.copy-button {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    width: 40%;
+}
+
+.copy-button:active {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    box-shadow: none;
+}
+
+.clear-button {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    width: 40%;
+}
+
+.clear-button:active {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    box-shadow: none;
+}
+
+// Item 7 — subtle card gradient
 .output-div {
-    background-color: #2E4152;
-    padding:20px;
-    margin:20px;
-    width: 35vw;
-    min-width: 400px;
+    background: linear-gradient(145deg, #344e66 0%, #2E4152 100%);
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
     border-radius: 20px;
-    box-shadow: 5px 5px 5px black;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-.output-header{
+.output-header {
     display: flex;
     justify-content: space-between;
-    margin-right: 15px;
-    margin-left: 5px;
-
+    width: 95%;
+    margin: 0;
 }
 
-.input-header{
-    color:#B7E4C7;
-}
-
-.output-header-title{
+.input-header {
     color: #B7E4C7;
+    width: 95%;
+    margin: 0;
 }
 
-.output-header-length{
-    color: #FF8A5B;
+.output-header-title {
+    color: #B7E4C7;
+    margin: 0;
 }
-.mat-button-toggle-checked {
 
-    background-color: #FF8A5B;
-    color: #B7E4C7;
-  }
-.mat-button-toggle {
-    background-color: #2E4152;
-    color: #B7E4C7;
-  }
+// Item 7 — softer orange on count
+.output-header-length {
+    color: #E07050;
+    margin: 0;
+}
 
 textarea:focus {
-  outline: none;
-  box-shadow: 1px 1px 5px black;
+    outline: none;
+    box-shadow: 0 0 12px rgba(183, 228, 199, 0.15);
+}
+
+// Item 3 — Help button
+.help-btn {
+    background: none;
+    border: 2px solid #B7E4C7;
+    color: #B7E4C7;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+        background-color: #3a5468;
+    }
+}
+
+// Item 3 — Modal
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #344e66 0%, #2E4152 100%);
+    border-radius: 20px;
+    padding: 36px 40px;
+    max-width: 560px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.modal-title {
+    color: #B7E4C7;
+    margin: 0 0 24px;
+    font-size: 22px;
+}
+
+.modal-section-heading {
+    color: #E07050;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 20px 0 6px;
+
+    &:first-of-type { margin-top: 0; }
+}
+
+.modal-text {
+    color: #B7E4C7;
+    line-height: 1.65;
+    margin: 0 0 4px;
+    font-size: 14px;
+
+    strong { color: #fff; font-weight: 600; }
+
+    code {
+        background-color: rgba(0, 0, 0, 0.25);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 13px;
+    }
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+.help-close-btn {
+    background-color: #E07050 !important;
+    color: #1A2035 !important;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 36px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 3px 3px 5px black;
+
+    &:active {
+        box-shadow: 0 0 0 black;
+    }
 }

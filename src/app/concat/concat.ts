@@ -1,100 +1,93 @@
-import { Component } from '@angular/core';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import { MatButtonToggleGroup } from "@angular/material/button-toggle";
-import {MatButtonModule} from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {FormsModule} from '@angular/forms';
-import {MatToolbarModule} from '@angular/material/toolbar';
+import { Component, signal, computed, effect } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-concat',
-  imports: [MatButtonToggleGroup, MatButtonToggleModule, MatFormFieldModule, MatButtonModule, MatIconModule,MatInputModule,FormsModule,MatToolbarModule],
+  imports: [
+    MatButtonModule,
+    FormsModule,
+  ],
   templateUrl: './concat.html',
-  styleUrl: './concat.scss'
+  styleUrl: './concat.scss',
 })
 export class ConCat {
+  inputText = signal('');
+  committedInput = signal('');
 
-  inputText:string = ""
-  outputText:string = ""
-  wrap:number = 5
-  outputLength:number = 0
+  // Persisted signals — initialized from localStorage, defaults applied on first visit
+  selectedOption = signal(localStorage.getItem('dlimitr_option') ?? 'SQLString');
+  wrap = signal(Number(localStorage.getItem('dlimitr_wrap') ?? '5'));
+  wrapper = signal(localStorage.getItem('dlimitr_wrapper') ?? 'None');
 
-  concat(input:string, wrapInput:number, option:string){
+  // UI state
+  showHelp = signal(false);
+  copied = signal(false);
 
-    this.outputText = ''
-    this.wrap = wrapInput
-    
+  constructor() {
+    effect(() => localStorage.setItem('dlimitr_option', this.selectedOption()));
+    effect(() => localStorage.setItem('dlimitr_wrap', String(this.wrap())));
+    effect(() => localStorage.setItem('dlimitr_wrapper', this.wrapper()));
+  }
 
-    let inputArray:string[] = input.split(/\r?\n/)
+  result = computed(() => {
+    let inputArray = this.committedInput()
+      .split(/\r?\n/)
+      .filter((s) => s !== '')
+      .map((item) => item.trim());
 
-    inputArray = inputArray.filter((s) => s != '')
+    inputArray = Array.from(new Set(inputArray));
 
-    let inputSet = new Set(inputArray);
+    const wrap = this.wrap();
+    const option = this.selectedOption();
+    let outputText = '';
 
-    inputArray = Array.from(inputSet)
-
-    this.outputLength = inputArray.length
-
-    if (option == "SQLString"){
-
-      for(let i:number=0; i<inputArray.length; i++){
-
-
-        if (i == inputArray.length-1){
-          this.outputText+= "'"+ inputArray[i].trim() +"'"
-        }
-        else{
-          this.outputText+= "'"+ inputArray[i].trim() +"'"+","
-        }
-
-        if ((i+1) % this.wrap ==0){
-          this.outputText+="\n"
-        }
+    if (option === 'SQLString') {
+      for (let i = 0; i < inputArray.length; i++) {
+        const isLast = i === inputArray.length - 1;
+        const isWrapBoundary = (i + 1) % wrap === 0;
+        outputText += isLast || isWrapBoundary
+          ? `'${inputArray[i]}'`
+          : `'${inputArray[i]}',`;
+        if (isWrapBoundary) outputText += '\n';
+      }
+    } else if (option === 'SemiColon') {
+      for (let i = 0; i < inputArray.length; i++) {
+        outputText += inputArray[i] + ';';
+        if ((i + 1) % wrap === 0) outputText += '\n';
+      }
+    } else if (option === 'Comma') {
+      for (let i = 0; i < inputArray.length; i++) {
+        const isLast = i === inputArray.length - 1;
+        const isWrapBoundary = (i + 1) % wrap === 0;
+        outputText += isLast || isWrapBoundary
+          ? inputArray[i]
+          : inputArray[i] + ',';
+        if (isWrapBoundary) outputText += '\n';
       }
     }
-    else if (option == "SemiColon"){
 
-      for(let i:number=0; i<inputArray.length; i++){
+    const w = this.wrapper();
+    const finalText = inputArray.length === 0
+      ? outputText
+      : w === '()' ? `(${outputText})` : w === '{}' ? `{${outputText}}` : outputText;
 
-      this.outputText+= inputArray[i].trim()+";"
+    return { text: finalText, length: inputArray.length };
+  });
 
-      if ((i+1) % this.wrap ==0){
-        this.outputText+="\n"
-      }
-
-    }
-  }
-    else if (option == "Comma"){
-
-      for(let i:number=0; i<inputArray.length; i++){
-
-        if (i == inputArray.length-1){
-            this.outputText+= inputArray[i].trim()
-          }
-          else{
-            this.outputText+= inputArray[i].trim() +","
-          }
-
-      if ((i+1) % this.wrap ==0){
-        this.outputText+="\n"
-      }
-
-    }
+  format() {
+    this.committedInput.set(this.inputText());
   }
 
-
+  clearFields() {
+    this.inputText.set('');
+    this.committedInput.set('');
   }
 
-  clearFields(){
-    this.inputText = ""
-    this.outputText = ""
-    this.outputLength = 0
-  }
-
-  onToggleChange(value:string){
-    console.log(value)
-
+  copyOutput() {
+    navigator.clipboard.writeText(this.result().text).then(() => {
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 1500);
+    });
   }
 }
