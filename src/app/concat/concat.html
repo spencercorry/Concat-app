@@ -1,31 +1,152 @@
-<mat-toolbar><span>My First ConCat Tool</span></mat-toolbar>
-
-<div class="flex-container">
-    <div>
-    <h1>Input List Below:</h1>
-    <textarea matInput class="inputArea" type="text" autofocus #inputtext ></textarea>
+<div class="flex-body">
+  <div class="page-grid">
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
     </div>
-
-    <div class="flex-container-buttons">
-        
-        <button mat-raised-button (click)="concat(inputtext.value, wrapInput.valueAsNumber, toggleGroup.value)">ConCat</button>
-
-        <form >
-        <mat-form-field class="wrap-input">
-            <mat-label>Wrap Value:</mat-label>
-                <input matInput  type="number" value="{{wrap}}" #wrapInput>
-        </mat-form-field>
-        </form>
-
-        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" #toggleGroup="matButtonToggleGroup" (change)="onToggleChange($event.value)">
-            <mat-button-toggle value="SQLString" [checked]="true">SQLString</mat-button-toggle>
-            <mat-button-toggle value="SemiColon">SemiColon</mat-button-toggle>
-            <mat-button-toggle value="Comma">Comma</mat-button-toggle>
-        </mat-button-toggle-group>
-        <button mat-raised-button (click)="clearFields(); inputtext.value=''">Clear</button>
+    <div class="controls">
+      <div class="toggle-group">
+        <button
+          class="toggle-btn"
+          [class.active]="selectedOption() === 'SQLString'"
+          (click)="selectedOption.set('SQLString')"
+        >
+          SQLString
+        </button>
+        <button
+          class="toggle-btn"
+          [class.active]="selectedOption() === 'SemiColon'"
+          (click)="selectedOption.set('SemiColon')"
+        >
+          SemiColon
+        </button>
+        <button
+          class="toggle-btn"
+          [class.active]="selectedOption() === 'Comma'"
+          (click)="selectedOption.set('Comma')"
+        >
+          Comma
+        </button>
+      </div>
+      <div class="toggle-group">
+        <button
+          class="toggle-btn"
+          [class.active]="wrapper() === 'None'"
+          (click)="wrapper.set('None')"
+        >
+          None
+        </button>
+        <button
+          class="toggle-btn"
+          [class.active]="wrapper() === '()'"
+          (click)="wrapper.set('()')"
+        >
+          ( )
+        </button>
+        <button
+          class="toggle-btn"
+          [class.active]="wrapper() === '{}'"
+          (click)="wrapper.set('{}')"
+        >
+          &#123; &#125;
+        </button>
+      </div>
+      <div class="wrap-container">
+        <label class="wrap-label">Wrap Value:</label>
+        <input
+          class="wrap-input-field"
+          type="number"
+          min="0"
+          max="20"
+          onwheel="this.blur()"
+          [ngModel]="wrap()"
+          (ngModelChange)="wrap.set(+$event)"
+        />
+      </div>
+      <button class="help-btn" (click)="showHelp.set(true)">?</button>
     </div>
-    <div>
-    <h1>Output ( {{outputLength}} ) :</h1>
-    <textarea class="outputArea" value="{{outputText}}" wrap="off" readonly type="text" onclick="this.select()" ></textarea>
+    <div class="input-div">
+      <h1 class="input-header">Input List:</h1>
+      <textarea
+        class="inputArea"
+        autofocus
+        [ngModel]="inputText()"
+        (ngModelChange)="inputText.set($event)"
+      ></textarea>
     </div>
+    <div class="output-div">
+      <div class="output-header">
+        <h1 class="output-header-title">Output:</h1>
+        <h1 class="output-header-length">{{result().length}}</h1>
+      </div>
+      <textarea
+        class="outputArea"
+        [value]="result().text"
+        wrap="off"
+        readonly
+        (click)="$any($event.target).select()"
+      ></textarea>
+    </div>
+    <div class="flex-input-button-div">
+      <button mat-flat-button class="flex-input-button" (click)="format()">
+        <b>Format List</b>
+      </button>
+    </div>
+    <div class="output-buttons">
+      <button mat-flat-button class="copy-button" (click)="copyOutput()">
+        <b>{{ copied() ? 'Copied!' : 'Copy' }}</b>
+      </button>
+      <button mat-flat-button class="clear-button" (click)="clearFields()">
+        <b>Clear</b>
+      </button>
+    </div>
+  </div>
 </div>
+
+@if (showHelp()) {
+<div class="modal-overlay" (click)="showHelp.set(false)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2 class="modal-title">How to use DlimitR</h2>
+
+    <p class="modal-section-heading">Input</p>
+    <p class="modal-text">
+      Paste your list into the <strong>Input List</strong> box — one item per
+      line. Duplicates are removed and whitespace is trimmed automatically.
+    </p>
+
+    <p class="modal-section-heading">Delimiter</p>
+    <p class="modal-text">
+      <strong>SQLString</strong> — wraps each item in single quotes:
+      <code>'item'</code>
+    </p>
+    <p class="modal-text">
+      <strong>SemiColon</strong> — appends a semicolon: <code>item;</code>
+    </p>
+    <p class="modal-text">
+      <strong>Comma</strong> — separates items with commas: <code>item,</code>
+    </p>
+
+    <p class="modal-section-heading">Wrapper</p>
+    <p class="modal-text">
+      Surrounds the entire output in <code>( )</code> or
+      <code>&#123; &#125;</code>. Useful for SQL <code>IN (...)</code> clauses.
+    </p>
+
+    <p class="modal-section-heading">Wrap Value</p>
+    <p class="modal-text">
+      Sets how many items appear on each line before a line break is inserted.
+    </p>
+
+    <p class="modal-section-heading">Output</p>
+    <p class="modal-text">
+      Click <strong>Format List</strong> to run. Click the output area to select
+      all text, or hit <strong>Copy</strong> to copy it to your clipboard.
+    </p>
+
+    <div class="modal-footer">
+      <button class="help-close-btn" (click)="showHelp.set(false)">
+        <b>Close</b>
+      </button>
+    </div>
+  </div>
+</div>
+}
