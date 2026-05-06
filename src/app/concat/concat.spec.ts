@@ -39,16 +39,32 @@ describe('ConCat', () => {
 
     it('inserts a newline after every Nth item', () => {
       expect(run('a\nb\nc\nd', 'SQLString', 2, 'None').text)
-        .toBe("'a','b'\n'c','d'\n");
+        .toBe("'a','b',\n'c','d'");
     });
 
     it('wrap=1 puts each item on its own line', () => {
       expect(run('a\nb\nc', 'SQLString', 1, 'None').text)
-        .toBe("'a'\n'b'\n'c'\n");
+        .toBe("'a',\n'b',\n'c'");
     });
 
     it('wrap larger than item count produces no newlines', () => {
       expect(run('a\nb', 'SQLString', 10, 'None').text).toBe("'a','b'");
+    });
+
+    it('produces a valid SQL IN-clause list when wrapped with parentheses', () => {
+      const input = [
+        'AL', 'AK', 'AZ', 'AR',
+        'CA', 'CO', 'CT', 'DE',
+        'FL', 'GA', 'HI', 'ID',
+      ].join('\n');
+
+      const result = run(input, 'SQLString', 4, '()');
+
+      // Ready to paste directly into: WHERE state_code IN (...)
+      expect(result.text).toBe(
+        "('AL','AK','AZ','AR',\n'CA','CO','CT','DE',\n'FL','GA','HI','ID')"
+      );
+      expect(result.length).toBe(12);
     });
   });
 
@@ -62,7 +78,7 @@ describe('ConCat', () => {
 
     it('inserts a newline after every Nth item', () => {
       expect(run('a\nb\nc\nd', 'SemiColon', 2, 'None').text)
-        .toBe('a;b;\nc;d;\n');
+        .toBe('a;b;\nc;d;');
     });
 
     it('single item gets a semicolon', () => {
@@ -84,12 +100,12 @@ describe('ConCat', () => {
 
     it('inserts a newline after every Nth item', () => {
       expect(run('a\nb\nc\nd', 'Comma', 2, 'None').text)
-        .toBe('a,b\nc,d\n');
+        .toBe('a,b,\nc,d');
     });
 
     it('wrap=1 puts each item on its own line', () => {
       expect(run('a\nb\nc', 'Comma', 1, 'None').text)
-        .toBe('a\nb\nc\n');
+        .toBe('a,\nb,\nc');
     });
   });
 
